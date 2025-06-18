@@ -203,25 +203,6 @@ fi
 
 source .env
 
-echo "🌐 Получение SSL сертификата..."
-if [ ! -f "/etc/letsencrypt/live/${BLOG_DOMAIN}/fullchain.pem" ]; then
-    # Временно запускаем nginx для получения сертификата
-    docker-compose up -d nginx
-
-    # Получаем сертификат
-    docker run --rm \
-        -v /etc/letsencrypt:/etc/letsencrypt \
-        -v /var/lib/letsencrypt:/var/lib/letsencrypt \
-        -p 80:80 \
-        certbot/certbot certonly \
-        --standalone \
-        --agree-tos \
-        --email $SSL_EMAIL \
-        -d $BLOG_DOMAIN
-
-    # Останавливаем временный nginx
-    docker-compose down
-fi
 
 echo "🐳 Запуск Docker контейнеров..."
 docker-compose up -d
