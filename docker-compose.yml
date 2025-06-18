@@ -12,7 +12,7 @@ services:
       - 8080:80
     environment:
       WORDPRESS_TABLE_PREFIX: rxz_42_
-      WORDPRESS_DB_HOST: db:3306
+      WORDPRESS_DB_HOST: mysql
       WORDPRESS_DB_USER: researched_user
       WORDPRESS_DB_PASSWORD: ${DB_PASSWORD:-researched_password_2024}
       WORDPRESS_DB_NAME: researched_db
