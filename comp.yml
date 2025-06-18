@@ -7,13 +7,23 @@ services:
     restart: unless-stopped
     depends_on:
       - mysql
+      - redis
     ports:
       - 8080:80
     environment:
+      WORDPRESS_TABLE_PREFIX: rxz_42_
       WORDPRESS_DB_HOST: mysql
       WORDPRESS_DB_USER: researched_user
       WORDPRESS_DB_PASSWORD: ${DB_PASSWORD:-researched_password_2024}
       WORDPRESS_DB_NAME: researched_db
+      WORDPRESS_CONFIG_EXTRA: |
+        define('FORCE_SSL_ADMIN', false);
+        define('WP_REDIS_HOST', 'redis');
+        define('WP_REDIS_PORT', 6379);
+        define('WP_CACHE', true);
+        define('WP_MEMORY_LIMIT', '256M');
+        define('DISALLOW_FILE_EDIT', true);
+        define('WP_DEBUG', false);
     volumes:
       - ./data/html:/var/www/html
       - wordpress_data:/var/www/html/wp-content/uploads
@@ -36,6 +46,16 @@ services:
       --innodb-buffer-pool-size=128M
       --max-connections=100
       --innodb-log-file-size=64M
+    networks:
+      - researched_network
+
+  redis:
+    image: redis:7-alpine
+    container_name: researched_redis
+    restart: unless-stopped
+    volumes:
+      - ./data/redis:/data
+    command: redis-server --appendonly yes
     networks:
       - researched_network
 
