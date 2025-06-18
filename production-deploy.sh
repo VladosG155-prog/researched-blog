@@ -50,7 +50,7 @@ fi
 echo "🔧 Настройка конфигурации для продакшена..."
 
 # Обновляем docker-compose.yml для продакшена
-cat > docker-compose.yml << 'EOF'
+ccat > docker-compose.yml << 'EOF'
 services:
   nginx:
     image: nginx:latest
@@ -59,9 +59,17 @@ services:
       - ./data/html:/var/www/html
       - ./logs/nginx:/var/log/nginx
       - /etc/letsencrypt:/etc/letsencrypt:ro
-    ports:
-      - "8080:80"
-    links:
+    expose:
+      - "80"
+    networks:
+      - traefik
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.blog.rule=Host(`blog.researched.xyz`)"
+      - "traefik.http.routers.blog.entrypoints=websecure"
+      - "traefik.http.routers.blog.tls.certresolver=letsencrypt"
+      - "traefik.http.services.blog.loadbalancer.server.port=80"
+    depends_on:
       - wordpress
     restart: unless-stopped
 
@@ -116,6 +124,10 @@ services:
 
 volumes:
   elasticsearch_data:
+
+networks:
+  traefik:
+    external: true
 EOF
 
 # Создаем конфигурацию Nginx для продакшена
@@ -123,33 +135,13 @@ cat > nginx/nginx.conf << 'EOF'
 server {
     listen 80;
     server_name blog.researched.xyz;
-    return 301 https://$server_name$request_uri;
-}
-
-server {
-    listen 443 ssl http2;
-    server_name blog.researched.xyz;
-
-    ssl_certificate /etc/letsencrypt/live/blog.researched.xyz/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/blog.researched.xyz/privkey.pem;
-    ssl_session_timeout 1d;
-    ssl_session_cache shared:SSL:50m;
-    ssl_stapling on;
-    ssl_stapling_verify on;
-
-    # Безопасность
-    add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
-    add_header X-Frame-Options DENY always;
-    add_header X-Content-Type-Options nosniff always;
-    add_header X-XSS-Protection "1; mode=block" always;
 
     root /var/www/html;
-    index index.php;
+    index index.php index.html;
 
     access_log /var/log/nginx/blog-access.log;
     error_log /var/log/nginx/blog-error.log;
 
-    # Кэширование статики
     location ~* \.(js|css|png|jpg|jpeg|gif|ico|svg|webp)$ {
         expires 1y;
         add_header Cache-Control "public, immutable";
@@ -162,16 +154,13 @@ server {
 
     location ~ \.php$ {
         try_files $uri =404;
-        fastcgi_split_path_info ^(.+\.php)(/.+)$;
         fastcgi_pass wordpress:9000;
-        fastcgi_index index.php;
         include fastcgi_params;
-        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
-        fastcgi_param PATH_INFO $fastcgi_path_info;
+        fastcgi_param SCRIPT_FILENAME \$document_root\$fastcgi_script_name;
+        fastcgi_param PATH_INFO \$fastcgi_path_info;
         fastcgi_read_timeout 300;
     }
 
-    # Блокировка доступа к системным файлам
     location ~ /\. {
         deny all;
     }
