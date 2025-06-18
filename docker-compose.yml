@@ -8,6 +8,8 @@ services:
     depends_on:
       - db
       - redis
+    ports:
+      - 8080:80
     environment:
       WORDPRESS_TABLE_PREFIX: rxz_42_
       WORDPRESS_DB_HOST: db:3306
