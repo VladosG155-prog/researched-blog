@@ -10,7 +10,7 @@ echo "🚀 Запуск развертывания блога researched.xyz..."
 # Конфигурация
 DOMAIN="researched.xyz"
 BLOG_DOMAIN="blog.researched.xyz"
-WP_PATH="/var/www/blog"
+WP_PATH="/usr/local/bin/blog"
 NGINX_PATH="/etc/nginx/sites-available"
 SSL_EMAIL="admin@researched.xyz"
 
