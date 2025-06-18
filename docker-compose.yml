@@ -30,7 +30,7 @@ services:
       - ./data/html:/var/www/html
       - wordpress_data:/var/www/html/wp-content/uploads
     networks:
-      - researched_network
+      - dockploy_network
 
   db:
     image: mysql:8.0
@@ -49,7 +49,7 @@ services:
       --max-connections=100
       --innodb-log-file-size=64M
     networks:
-      - researched_network
+      - dockploy_network
 
   redis:
     image: redis:7-alpine
@@ -59,7 +59,7 @@ services:
       - ./data/redis:/data
     command: redis-server --appendonly yes
     networks:
-      - researched_network
+      - dockploy_network
 
 volumes:
   mysql_data:
