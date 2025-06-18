@@ -44,7 +44,7 @@ cd $WP_PATH
 if [ ! -d ".git" ]; then
     git clone https://github.com/VladosG155-prog/researched-blog.git .
 else
-    git pull origin main
+    git pull origin main --no-rebase
 fi
 
 echo "🔧 Настройка конфигурации для продакшена..."
