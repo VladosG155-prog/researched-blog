@@ -60,8 +60,7 @@ services:
       - ./logs/nginx:/var/log/nginx
       - /etc/letsencrypt:/etc/letsencrypt:ro
     ports:
-      - "80:80"
-      - "443:443"
+      - "8080:80"
     links:
       - wordpress
     restart: unless-stopped
