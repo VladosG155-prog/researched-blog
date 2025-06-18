@@ -80,10 +80,6 @@ $table_prefix = 'rxz_42_';
  * @link https://wordpress.org/documentation/article/debugging-in-wordpress/
  */
 
-// === PRODUCTION SETTINGS FOR RESEARCHED.XYZ ===
-define('WP_HOME', 'https://researched.xyz/blog');
-define('WP_SITEURL', 'https://researched.xyz/blog');
-
 // === SECURITY ===
 define('DISALLOW_FILE_EDIT', true);
 define('WP_DEBUG', false);
