@@ -32,7 +32,7 @@ services:
     networks:
       - researched_network
 
-  db:
+  mysql:
     image: mysql:8.0
     container_name: researched_mysql
     restart: unless-stopped
