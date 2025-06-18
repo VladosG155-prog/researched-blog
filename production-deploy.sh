@@ -50,7 +50,7 @@ fi
 echo "🔧 Настройка конфигурации для продакшена..."
 
 # Обновляем docker-compose.yml для продакшена
-ccat > docker-compose.yml << 'EOF'
+cat > docker-compose.yml << 'EOF'
 services:
   nginx:
     image: nginx:latest
