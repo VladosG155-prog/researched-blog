@@ -6,7 +6,7 @@ services:
     container_name: researched_wordpress
     restart: unless-stopped
     depends_on:
-      - db
+      - mysql
       - redis
     ports:
       - 8080:80
