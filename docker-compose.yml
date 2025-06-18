@@ -15,7 +15,7 @@ services:
       WORDPRESS_DB_NAME: researched_db
       WORDPRESS_DB_USER: researched_user
       WORDPRESS_DB_PASSWORD: ${DB_PASSWORD:-researched_password_2024}
-      
+
       # Безопасность WordPress
       WORDPRESS_AUTH_KEY: ${AUTH_KEY:-K&q8]D[r*9Lm#3vE@Nh7!wX$bF2+gJ5sZ0YuP6cT&8fK9qR#mL3xV@2bN&7wE!}
       WORDPRESS_SECURE_AUTH_KEY: ${SECURE_AUTH_KEY:-M9qR#mL3xV@2bN&7wE!K&q8]D[r*9Lm#3vE@Nh7!wX$bF2+gJ5sZ0YuP6cT&8f}
@@ -25,7 +25,7 @@ services:
       WORDPRESS_SECURE_AUTH_SALT: ${SECURE_AUTH_SALT:-R#mL3xV@2bN&7wE!K&q8]D[r*9Lm#3vE@Nh7!wX$bF2+gJ5sZ0YuP6cT&8fK9q}
       WORDPRESS_LOGGED_IN_SALT: ${LOGGED_IN_SALT:-V@2bN&7wE!K&q8]D[r*9Lm#3vE@Nh7!wX$bF2+gJ5sZ0YuP6cT&8fK9qR#mL3x}
       WORDPRESS_NONCE_SALT: ${NONCE_SALT:-7wE!K&q8]D[r*9Lm#3vE@Nh7!wX$bF2+gJ5sZ0YuP6cT&8fK9qR#mL3xV@2bN&}
-      
+
       # Настройки для researched.xyz/blog
       WORDPRESS_CONFIG_EXTRA: |
         define('WP_HOME', 'https://researched.xyz/blog');
@@ -35,19 +35,15 @@ services:
         define('WP_MEMORY_LIMIT', '256M');
         define('DISALLOW_FILE_EDIT', true);
         define('WP_DEBUG', false);
-        
-        // SSL за прокси
-        if (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https') {
-            $_SERVER['HTTPS'] = 'on';
-        }
-    
+
+
     volumes:
       - ./data/html:/var/www/html/blog
       - wordpress_data:/var/www/html/blog/wp-content/uploads
-    
+
     depends_on:
       - mysql
-    
+
     networks:
       - researched_network
 
@@ -60,16 +56,16 @@ services:
       MYSQL_USER: researched_user
       MYSQL_PASSWORD: ${DB_PASSWORD:-researched_password_2024}
       MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-researched_root_2024}
-    
+
     volumes:
       - mysql_data:/var/lib/mysql
-    
+
     command: >
       --default-authentication-plugin=mysql_native_password
       --innodb-buffer-pool-size=128M
       --max-connections=100
       --innodb-log-file-size=64M
-    
+
     networks:
       - researched_network
 
