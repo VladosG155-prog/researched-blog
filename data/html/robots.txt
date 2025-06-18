@@ -1,0 +1,42 @@
+User-agent: *
+Allow: /
+
+# WordPress admin и системные файлы
+Disallow: /wp-admin/
+Disallow: /wp-includes/
+Disallow: /wp-content/plugins/
+Disallow: /wp-content/cache/
+Disallow: /wp-content/themes/
+Allow: /wp-content/themes/*/css/
+Allow: /wp-content/themes/*/js/
+Allow: /wp-content/themes/*/images/
+Allow: /wp-content/themes/*/assets/
+
+# Временные и системные файлы
+Disallow: /wp-config.php
+Disallow: /readme.html
+Disallow: /license.txt
+Disallow: /*.sql$
+Disallow: /*.tar.gz$
+
+# Параметры поиска и фильтров
+Disallow: /?s=
+Disallow: /search/
+Disallow: /?p=*
+Disallow: /?attachment_id=*
+
+# Комментарии и трекбэки
+Disallow: /comment-page-*
+Disallow: /*/comment-page-*
+Disallow: /xmlrpc.php
+Disallow: /wp-trackback.php
+
+# Архивы по датам (если не нужны)
+Disallow: /*/20*/
+
+# Фиды разрешены
+Allow: /feed/
+Allow: /*/feed/
+
+# Sitemap
+Sitemap: http://localhost:8080/sitemap_index.xml 

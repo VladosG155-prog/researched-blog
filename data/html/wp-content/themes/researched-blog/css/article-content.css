@@ -1,0 +1,36 @@
+/* Минималистичные стили для карточек и элементов */
+.card-minimal {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card-minimal:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+}
+
+/* Стили для кнопок и тегов */
+.tag-minimal {
+    transition: all 0.2s ease;
+}
+
+.tag-minimal:hover {
+    box-shadow: 0 4px 12px rgba(208, 110, 49, 0.3);
+}
+
+/* Стили для полей ввода */
+.input-minimal {
+    transition: all 0.2s ease;
+}
+
+.input-minimal:focus {
+    box-shadow: 0 0 0 3px rgba(208, 110, 49, 0.1), 0 4px 14px rgba(0, 0, 0, 0.15);
+}
+
+/* Стили для кнопок */
+.button-minimal {
+    transition: all 0.2s ease;
+}
+
+.button-minimal:hover {
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+} 

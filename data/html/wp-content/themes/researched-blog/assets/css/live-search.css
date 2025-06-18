@@ -1,0 +1,294 @@
+/* Live Search Styles */
+body {
+    background-color: #131312 !important;
+}
+
+.search-container {
+    position: relative;
+}
+
+.search-loading {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 10;
+}
+
+.search-loading.hidden {
+    display: none;
+}
+
+/* Анимация загрузки */
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.animate-spin {
+    animation: spin 1s linear infinite;
+}
+
+/* Плавные переходы для результатов поиска */
+#posts-grid {
+    transition: opacity 0.3s ease-in-out;
+}
+
+#posts-grid.loading {
+    opacity: 0.7;
+}
+
+/* Улучшенные стили для поля поиска */
+#search-input {
+    transition: all 0.3s ease;
+    box-shadow: 0 0 0 0 rgba(208, 110, 49, 0.3);
+}
+
+#search-input:focus {
+    box-shadow: 0 0 0 3px rgba(208, 110, 49, 0.3);
+    transform: translateY(-1px);
+}
+
+/* Анимация появления результатов */
+.post-item {
+    animation: fadeInUp 0.4s ease-out;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Индикатор "нет результатов" */
+.no-results {
+    animation: fadeIn 0.5s ease-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+/* Hover эффекты для результатов поиска */
+.post-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+}
+
+/* Улучшенная типографика для поиска */
+.search-highlight {
+    background-color: rgba(208, 110, 49, 0.3);
+    padding: 1px 2px;
+    border-radius: 0;
+}
+
+/* Responsive стили */
+@media (max-width: 768px) {
+    .search-container {
+        margin-bottom: 2rem;
+    }
+    
+    #search-input {
+        font-size: 16px; /* Предотвращает зум на iOS */
+    }
+}
+
+/* Стили для состояния загрузки */
+.search-results-loading {
+    position: relative;
+}
+
+.search-results-loading::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(35, 35, 35, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 5;
+}
+
+/* Улучшенная анимация карточек */
+.search-result-card {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    will-change: transform, opacity;
+}
+
+.search-result-card:hover {
+    transform: translateY(-4px) scale(1.02);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
+}
+
+/* Mobile Responsive Improvements */
+@media (max-width: 640px) {
+    /* Typography adjustments for mobile */
+    .blog-content h1, .blog-content h2, .blog-content h3 {
+        font-size: 1.2em !important;
+        line-height: 1.4 !important;
+        margin-bottom: 1rem !important;
+    }
+    
+    .blog-content p {
+        font-size: 16px !important;
+        line-height: 1.6 !important;
+        margin-bottom: 1rem !important;
+    }
+    
+    .blog-content img {
+        max-width: 100% !important;
+        height: auto !important;
+        border-radius: 0;
+        margin: 1rem 0 !important;
+    }
+    
+    .blog-content blockquote {
+        border-left: 3px solid #D06E31 !important;
+        padding-left: 1rem !important;
+        margin: 1.5rem 0 !important;
+        font-style: italic !important;
+        color: #e5e5e5 !important;
+    }
+    
+    .blog-content code {
+        background-color: #222223 !important;
+        padding: 2px 6px !important;
+        border-radius: 0;
+        font-size: 14px !important;
+        color: #ff7a3d !important;
+    }
+    
+    .blog-content pre {
+        background-color: #222223 !important;
+        padding: 1rem !important;
+        border-radius: 0;
+        overflow-x: auto !important;
+        margin: 1rem 0 !important;
+        border: 1px solid #333 !important;
+    }
+    
+    .blog-content ul, .blog-content ol {
+        padding-left: 1.5rem !important;
+        margin: 1rem 0 !important;
+    }
+    
+    .blog-content li {
+        margin-bottom: 0.5rem !important;
+        line-height: 1.6 !important;
+    }
+    
+    /* Mobile table improvements */
+    .blog-content table {
+        display: block !important;
+        overflow-x: auto !important;
+        white-space: nowrap !important;
+        margin: 1rem 0 !important;
+        border: 1px solid #333 !important;
+        border-radius: 0;
+    }
+    
+    .blog-content td, .blog-content th {
+        padding: 0.5rem !important;
+        font-size: 14px !important;
+    }
+}
+
+/* Line clamp utilities for better text truncation */
+.line-clamp-1 {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 1;
+}
+
+.line-clamp-2 {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+}
+
+.line-clamp-3 {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+}
+
+/* Enhanced card animations for related posts */
+.group:hover .group-hover\:scale-\[1\.02\] {
+    transform: scale(1.02) !important;
+}
+
+.group:hover .group-hover\:-translate-y-1 {
+    transform: translateY(-4px) !important;
+}
+
+.group:hover .group-hover\:translate-x-1 {
+    transform: translateX(4px) !important;
+}
+
+.group:hover .group-hover\:text-orange-100 {
+    color: #fed7aa !important;
+}
+
+.group:hover .group-hover\:text-\[\#ff7a3d\] {
+    color: #ff7a3d !important;
+}
+
+.group:hover .group-hover\:text-gray-200 {
+    color: #e5e7eb !important;
+}
+
+/* Smooth transitions for all interactive elements */
+.transition-all {
+    transition-property: all !important;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1) !important;
+    transition-duration: 300ms !important;
+}
+
+.transition-colors {
+    transition-property: color, background-color, border-color !important;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1) !important;
+    transition-duration: 300ms !important;
+}
+
+.transition-transform {
+    transition-property: transform !important;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1) !important;
+    transition-duration: 300ms !important;
+}
+
+/* Responsive grid improvements */
+@media (max-width: 768px) {
+    .grid {
+        gap: 1rem !important;
+    }
+    
+    .md\:grid-cols-2 {
+        grid-template-columns: repeat(1, minmax(0, 1fr)) !important;
+    }
+    
+    .lg\:grid-cols-3 {
+        grid-template-columns: repeat(1, minmax(0, 1fr)) !important;
+    }
+}
+
+@media (min-width: 640px) and (max-width: 1024px) {
+    .sm\:grid-cols-2 {
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    }
+} 

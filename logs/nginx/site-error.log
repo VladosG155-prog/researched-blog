@@ -1,0 +1,1 @@
+2025/06/18 15:35:41 [error] 22#22: *3273 client intended to send too large body: 1079412 bytes, client: 192.168.65.1, server: _, request: "POST /wp-admin/async-upload.php HTTP/1.1", host: "localhost:8080", referrer: "http://localhost:8080/wp-admin/post-new.php"
