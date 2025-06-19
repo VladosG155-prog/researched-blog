@@ -17,7 +17,8 @@
  *
  * @package WordPress
  */
-
+define('WP_HOME', 'https://researched.xyz/blog');
+define('WP_SITEURL', 'https://researched.xyz/blog');
 // ** Database settings - Docker environment variables ** //
 /** The name of the database for WordPress */
 define( 'DB_NAME', getenv('WORDPRESS_DB_NAME') ?: 'researched_db' );
