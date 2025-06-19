@@ -1,67 +1,85 @@
+version: '3.8'
+
+# Для использования переменных: cp production.env .env
+
 services:
-  nginx:
-    image: nginx:latest
-    platform: linux/amd64
-    volumes:
-      - ./nginx:/etc/nginx/conf.d
-      - ./data/html:/var/www/html
-      - ./logs/nginx:/var/log/nginx
+  wordpress:
+    image: wordpress:6.4-php8.1-apache
+    container_name: researched_wordpress
+    restart: unless-stopped
     ports:
       - "8888:80"
-    links:
-      - wordpress
+    environment:
+      # База данных
+      WORDPRESS_DB_HOST: mysql
+      WORDPRESS_DB_NAME: researched_db
+      WORDPRESS_DB_USER: researched_user
+      WORDPRESS_DB_PASSWORD: ${DB_PASSWORD:-researched_password_2024}
 
-  wordpress:
+      # Безопасность WordPress
+      WORDPRESS_AUTH_KEY: ${AUTH_KEY:-K&q8]D[r*9Lm#3vE@Nh7!wX$bF2+gJ5sZ0YuP6cT&8fK9qR#mL3xV@2bN&7wE!}
+      WORDPRESS_SECURE_AUTH_KEY: ${SECURE_AUTH_KEY:-M9qR#mL3xV@2bN&7wE!K&q8]D[r*9Lm#3vE@Nh7!wX$bF2+gJ5sZ0YuP6cT&8f}
+      WORDPRESS_LOGGED_IN_KEY: ${LOGGED_IN_KEY:-X$bF2+gJ5sZ0YuP6cT&8fK9qR#mL3xV@2bN&7wE!K&q8]D[r*9Lm#3vE@Nh7!w}
+      WORDPRESS_NONCE_KEY: ${NONCE_KEY:-Z0YuP6cT&8fK9qR#mL3xV@2bN&7wE!K&q8]D[r*9Lm#3vE@Nh7!wX$bF2+gJ5s}
+      WORDPRESS_AUTH_SALT: ${AUTH_SALT:-F2+gJ5sZ0YuP6cT&8fK9qR#mL3xV@2bN&7wE!K&q8]D[r*9Lm#3vE@Nh7!wX$b}
+      WORDPRESS_SECURE_AUTH_SALT: ${SECURE_AUTH_SALT:-R#mL3xV@2bN&7wE!K&q8]D[r*9Lm#3vE@Nh7!wX$bF2+gJ5sZ0YuP6cT&8fK9q}
+      WORDPRESS_LOGGED_IN_SALT: ${LOGGED_IN_SALT:-V@2bN&7wE!K&q8]D[r*9Lm#3vE@Nh7!wX$bF2+gJ5sZ0YuP6cT&8fK9qR#mL3x}
+      WORDPRESS_NONCE_SALT: ${NONCE_SALT:-7wE!K&q8]D[r*9Lm#3vE@Nh7!wX$bF2+gJ5sZ0YuP6cT&8fK9qR#mL3xV@2bN&}
+
+      # Настройки для researched.xyz/blog
+      WORDPRESS_CONFIG_EXTRA: |
+        define('WP_HOME', 'https://researched.xyz/blog');
+        define('WP_SITEURL', 'https://researched.xyz/blog');
+        define('FORCE_SSL_ADMIN', true);
+        define('WP_CACHE', true);
+        define('WP_MEMORY_LIMIT', '256M');
+        define('DISALLOW_FILE_EDIT', true);
+        define('WP_DEBUG', false);
+
+        // SSL за прокси
+        if (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https') {
+            $_SERVER['HTTPS'] = 'on';
+        }
+
+    volumes:
+      - ./data/html:/var/www/html/blog
+      - wordpress_data:/var/www/html/blog/wp-content/uploads
+
     depends_on:
-      - db
-    image: wordpress:fpm
-    platform: linux/amd64
-    volumes:
-      - ./data/html:/var/www/html
-    restart: always
-    environment:
-      WORDPRESS_TABLE_PREFIX: rxz_42_
-      WORDPRESS_DB_HOST: db:3306
-      WORDPRESS_DB_USER: researched
-      WORDPRESS_DB_PASSWORD: researched_xyz
-      WORDPRESS_DB_NAME: wordpress
+      - mysql
 
-  db:
-    image: mysql:5.7
-    platform: linux/amd64
-    volumes:
-      - ./data/mysql:/var/lib/mysql
-    restart: always
-    environment:
-      MYSQL_ROOT_PASSWORD: researched_xyz
-      MYSQL_DATABASE: wordpress
-      MYSQL_USER: researched
-      MYSQL_PASSWORD: 'researched_xyz'
+    networks:
+      - researched_network
 
-  elasticsearch:
-    image: bitnami/elasticsearch:8.11.1
-    platform: linux/amd64
+  mysql:
+    image: mysql:8.0
+    container_name: researched_mysql
+    restart: unless-stopped
     environment:
-      - "discovery.type=single-node"
-      - "xpack.security.enabled=false"
-      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
-    ports:
-      - "9200:9200"
-    volumes:
-      - elasticsearch_data:/usr/share/elasticsearch/data
+      MYSQL_DATABASE: researched_db
+      MYSQL_USER: researched_user
+      MYSQL_PASSWORD: ${DB_PASSWORD:-researched_password_2024}
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-researched_root_2024}
 
-  phpmyadmin:
-    image: phpmyadmin/phpmyadmin
-    platform: linux/amd64
-    restart: always
-    links:
-      - db:mysql
-    ports:
-      - "8081:80"
-    environment:
-      MYSQL_ROOT_PASSWORD: researched_xyz
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+    command: >
+      --default-authentication-plugin=mysql_native_password
+      --innodb-buffer-pool-size=128M
+      --max-connections=100
+      --innodb-log-file-size=64M
+
+    networks:
+      - researched_network
+
 
 volumes:
-  elasticsearch_data:
-  data:
-  logs:
+  mysql_data:
+    driver: local
+  wordpress_data:
+    driver: local
+
+networks:
+  researched_network:
+    driver: bridge

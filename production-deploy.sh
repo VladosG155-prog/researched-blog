@@ -42,7 +42,7 @@ mkdir -p /etc/letsencrypt
 echo "📦 Клонирование кода..."
 cd $WP_PATH
 if [ ! -d ".git" ]; then
-    git clone https://github.com/VladosG155-prog/researched-blog.git .
+    git clone https://github.com/YOUR_USERNAME/researched-blog.git .
 else
     git pull origin main
 fi
@@ -60,7 +60,7 @@ services:
       - ./logs/nginx:/var/log/nginx
       - /etc/letsencrypt:/etc/letsencrypt:ro
     ports:
-      - "8888:80"
+      - "80:80"
       - "443:443"
     links:
       - wordpress
@@ -176,7 +176,7 @@ server {
     location ~ /\. {
         deny all;
     }
-
+    
     location ~* /(?:uploads|files)/.*\.php$ {
         deny all;
     }
@@ -204,6 +204,25 @@ fi
 
 source .env
 
+echo "🌐 Получение SSL сертификата..."
+if [ ! -f "/etc/letsencrypt/live/${BLOG_DOMAIN}/fullchain.pem" ]; then
+    # Временно запускаем nginx для получения сертификата
+    docker-compose up -d nginx
+    
+    # Получаем сертификат
+    docker run --rm \
+        -v /etc/letsencrypt:/etc/letsencrypt \
+        -v /var/lib/letsencrypt:/var/lib/letsencrypt \
+        -p 80:80 \
+        certbot/certbot certonly \
+        --standalone \
+        --agree-tos \
+        --email $SSL_EMAIL \
+        -d $BLOG_DOMAIN
+    
+    # Останавливаем временный nginx
+    docker-compose down
+fi
 
 echo "🐳 Запуск Docker контейнеров..."
 docker-compose up -d
@@ -313,4 +332,4 @@ echo "- WordPress: /var/www/blog/data/html/"
 echo "- Логи: /var/www/blog/logs/"
 echo "- Бэкапы: /backups/blog/"
 echo ""
-echo "✅ Развертывание прошло успешно!"
+echo "✅ Развертывание прошло успешно!" 
