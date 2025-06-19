@@ -32,9 +32,11 @@ services:
     image: phpmyadmin/phpmyadmin
     platform: linux/amd64
     restart: always
+
     links:
       - mysql:mysql
     ports:
       - "8081:80"
     environment:
       MYSQL_ROOT_PASSWORD: researched_xyz
+      PMA_HOST: mysql
