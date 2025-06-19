@@ -82,9 +82,9 @@ $table_prefix = 'rxz_42_';
 
 // === SECURITY ===
 define('DISALLOW_FILE_EDIT', true);
-define('WP_DEBUG', false);
-define('WP_DEBUG_LOG', false);
-define('WP_DEBUG_DISPLAY', false);
+define('WP_DEBUG', true);
+define('WP_DEBUG_LOG', true);
+define('WP_DEBUG_DISPLAY', true);
 
 // === PERFORMANCE ===
 define('WP_CACHE', true);
@@ -95,9 +95,6 @@ define('CONCATENATE_SCRIPTS', false);
 
 // === SSL ===
 define('FORCE_SSL_ADMIN', false);
-if (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https') {
-    $_SERVER['HTTPS'] = 'on';
-}
 
 // === ELASTICSEARCH (optional) ===
 // define('ELASTICSEARCH_URL', 'http://your-elasticsearch-server:9200');
