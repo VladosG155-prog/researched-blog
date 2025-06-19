@@ -28,8 +28,8 @@ services:
 
       # Настройки для researched.xyz/blog
       WORDPRESS_CONFIG_EXTRA: |
-        define('WP_HOME', 'https://researched.xyz');
-        define('WP_SITEURL', 'https://researched.xyz');
+        define('WP_HOME', 'https://researched.xyz/blog');
+        define('WP_SITEURL', 'https://researched.xyz/blog');
         define('FORCE_SSL_ADMIN', true);
         define('WP_CACHE', true);
         define('WP_MEMORY_LIMIT', '256M');
