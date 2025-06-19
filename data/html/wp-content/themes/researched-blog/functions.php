@@ -18,130 +18,6 @@ function researched_calculate_reading_time($content) {
 }
 
 /**
- * Автоматическое исправление URL и настройка блога при первом запуске на продакшене
- */
-function researched_auto_fix_urls_on_production() {
-    // Проверяем, запущен ли уже скрипт
-    if (get_option('researched_urls_fixed')) {
-        return;
-    }
-
-    // Проверяем, что мы на продакшене (не localhost)
-    $current_domain = $_SERVER['HTTP_HOST'] ?? '';
-    if (strpos($current_domain, 'localhost') !== false || strpos($current_domain, '127.0.0.1') !== false) {
-        return;
-    }
-
-    global $wpdb;
-    
-    // Получаем текущий URL сайта
-    $current_home = get_option('home');
-    $current_siteurl = get_option('siteurl');
-    
-    // Если URL содержат localhost, исправляем их
-    if (strpos($current_home, 'localhost') !== false || strpos($current_siteurl, 'localhost') !== false) {
-        $new_url = 'https://researched.xyz/blog';
-        
-        // Обновляем основные настройки
-        update_option('home', $new_url);
-        update_option('siteurl', $new_url);
-        
-        // Обновляем URL в контенте
-        $wpdb->query($wpdb->prepare("
-            UPDATE {$wpdb->posts} 
-            SET post_content = REPLACE(post_content, %s, %s)
-        ", 'http://localhost:8080', $new_url));
-        
-        $wpdb->query($wpdb->prepare("
-            UPDATE {$wpdb->posts} 
-            SET post_content = REPLACE(post_content, %s, %s)
-        ", 'http://localhost', $new_url));
-        
-        // Обновляем мета данные
-        $wpdb->query($wpdb->prepare("
-            UPDATE {$wpdb->postmeta} 
-            SET meta_value = REPLACE(meta_value, %s, %s)
-        ", 'http://localhost:8080', $new_url));
-        
-        $wpdb->query($wpdb->prepare("
-            UPDATE {$wpdb->postmeta} 
-            SET meta_value = REPLACE(meta_value, %s, %s)
-        ", 'http://localhost', $new_url));
-        
-        // WordPress уже находится в /blog, дополнительная страница не нужна
-        
-        // Настраиваем постоянные ссылки
-        researched_setup_permalinks();
-        
-        // Очищаем кэш
-        wp_cache_flush();
-        
-        // Отмечаем, что скрипт выполнен
-        update_option('researched_urls_fixed', true);
-    }
-}
-
-/**
- * Создание страницы блога /blog
- */
-function researched_create_blog_page() {
-    // Проверяем, существует ли уже страница блога
-    $blog_page = get_page_by_path('blog');
-    
-    if (!$blog_page) {
-        // Создаем страницу блога
-        $blog_page_id = wp_insert_post([
-            'post_title' => 'Блог',
-            'post_name' => 'blog',
-            'post_content' => '',
-            'post_status' => 'publish',
-            'post_type' => 'page',
-            'post_author' => 1,
-        ]);
-        
-        if ($blog_page_id && !is_wp_error($blog_page_id)) {
-            // Устанавливаем эту страницу как страницу для постов
-            update_option('page_for_posts', $blog_page_id);
-            
-            // Устанавливаем статичную главную страницу
-            $front_page = get_page_by_path('home') ?: get_page_by_path('main');
-            if (!$front_page) {
-                // Создаем главную страницу если её нет
-                $front_page_id = wp_insert_post([
-                    'post_title' => 'Главная',
-                    'post_name' => 'home',
-                    'post_content' => '<h1>Добро пожаловать на researched.xyz</h1>',
-                    'post_status' => 'publish',
-                    'post_type' => 'page',
-                    'post_author' => 1,
-                ]);
-                if ($front_page_id && !is_wp_error($front_page_id)) {
-                    update_option('page_on_front', $front_page_id);
-                }
-            } else {
-                update_option('page_on_front', $front_page->ID);
-            }
-            
-            // Включаем статичные страницы
-            update_option('show_on_front', 'page');
-        }
-    }
-}
-
-/**
- * Настройка постоянных ссылок для researched.xyz/blog
- */
-function researched_setup_permalinks() {
-    // Устанавливаем структуру постоянных ссылок
-    update_option('permalink_structure', '/%postname%/');
-    
-    // Обновляем правила перезаписи
-    flush_rewrite_rules();
-}
-
-add_action('init', 'researched_auto_fix_urls_on_production');
-
-/**
  * Получение похожих постов на основе категорий и тегов.
  */
 function researched_get_similar_posts($post_id) {
@@ -219,8 +95,8 @@ if (!function_exists('researched_blog_theme_setup')) {
         add_theme_support('post-thumbnails');
 
         add_action('wp_enqueue_scripts', function () {
-            // Версия темы (для продакшена используем статичную версию)
-            $theme_version = wp_get_theme()->get('Version') ?: '1.0.8';
+            // Форсируем обновление версии для принудительной перезагрузки
+            $theme_version = '1.0.7_' . time();
             
             // Принудительно подключаем jQuery первым
             wp_enqueue_script('jquery');
@@ -231,7 +107,7 @@ if (!function_exists('researched_blog_theme_setup')) {
             // Подключаем JavaScript файлы
             // Live search подключаем только на страницах с поиском
             if (is_home() || is_front_page() || is_archive() || is_search() || is_404()) {
-            wp_enqueue_script('instant-search', get_template_directory_uri() . '/js/instant-search.js', ['jquery'], $theme_version, true);
+            wp_enqueue_script('instant-search', get_template_directory_uri() . '/js/instant-search.js', ['jquery'], $theme_version . '.1', true);
                 
                 // Локализация для AJAX только там, где нужно
                 wp_localize_script('instant-search', 'researched_ajax_obj', [
@@ -244,16 +120,11 @@ if (!function_exists('researched_blog_theme_setup')) {
             
         });
         
-        // Оптимизация для продакшена
+        // Принудительно отключаем кэширование для админ области
         add_action('init', function() {
-            // Отключаем XML-RPC если не используется
-            add_filter('xmlrpc_enabled', '__return_false');
-            
-            // Удаляем ненужные мета-теги
-            remove_action('wp_head', 'wp_generator');
-            remove_action('wp_head', 'rsd_link');
-            remove_action('wp_head', 'wlwmanifest_link');
-            remove_action('wp_head', 'wp_shortlink_wp_head');
+            if (is_admin()) {
+                header('Cache-Control: no-cache, must-revalidate, max-age=0');
+            }
         });
         
         // Disable XML-RPC
@@ -264,8 +135,7 @@ add_action('after_setup_theme', 'researched_blog_theme_setup');
 
 // Функция для проверки подключения к Elasticsearch
 function check_elasticsearch_connection() {
-    // Для продакшена - можете изменить на ваш Elasticsearch сервер
-    $es_url = defined('ELASTICSEARCH_URL') ? ELASTICSEARCH_URL : 'http://localhost:9200';
+    $es_url = 'http://elasticsearch:9200';
     
     $response = wp_remote_get($es_url, [
         'timeout' => 5,
@@ -572,7 +442,7 @@ function researched_add_json_ld_schema() {
                 '@type' => 'ListItem', 
                 'position' => 2,
                 'name' => 'Блог',
-                'item' => home_url()
+                'item' => home_url('/blog')
             );
             $breadcrumbs[] = array(
                 '@type' => 'ListItem',

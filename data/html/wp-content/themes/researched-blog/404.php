@@ -66,7 +66,7 @@ get_header(); ?>
                     </svg>
                     На главную
                 </a>
-                <a href="<?php echo home_url(); ?>" 
+                <a href="<?php echo home_url('/blog'); ?>" 
                    class="inline-flex items-center justify-center px-6 py-3 bg-[#222223] text-white font-semibold  hover:bg-[#2a2a2a] hover:shadow-lg transition-all duration-300 w-full sm:w-auto">
                     <svg class="w-4 h-4 sm:w-5 sm:h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
                         <path fill-rule="evenodd" d="M2 5a2 2 0 012-2h8a2 2 0 012 2v10a2 2 0 002 2H4a2 2 0 01-2-2V5zm3 1h6v4H5V6zm6 6H5v2h6v-2z" clip-rule="evenodd" />

@@ -1,22 +1,32 @@
 services:
+  nginx:
+    image: nginx:latest
+    platform: linux/amd64
+    volumes:
+      - ./nginx:/etc/nginx/conf.d
+      - ./data/html:/var/www/html
+      - ./logs/nginx:/var/log/nginx
+    ports:
+      - "8888:80"
+    links:
+      - wordpress
 
   wordpress:
     depends_on:
-      - mysql
-    image: wordpress:latest
+      - db
+    image: wordpress:fpm
     platform: linux/amd64
     volumes:
       - ./data/html:/var/www/html
-    ports:
-      - "8888:80"
     restart: always
     environment:
-      WORDPRESS_DB_HOST: mysql
+      WORDPRESS_TABLE_PREFIX: rxz_42_
+      WORDPRESS_DB_HOST: db:3306
       WORDPRESS_DB_USER: researched
       WORDPRESS_DB_PASSWORD: researched_xyz
       WORDPRESS_DB_NAME: wordpress
 
-  mysql:
+  db:
     image: mysql:5.7
     platform: linux/amd64
     volumes:
@@ -28,15 +38,30 @@ services:
       MYSQL_USER: researched
       MYSQL_PASSWORD: 'researched_xyz'
 
+  elasticsearch:
+    image: bitnami/elasticsearch:8.11.1
+    platform: linux/amd64
+    environment:
+      - "discovery.type=single-node"
+      - "xpack.security.enabled=false"
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ports:
+      - "9200:9200"
+    volumes:
+      - elasticsearch_data:/usr/share/elasticsearch/data
+
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
     platform: linux/amd64
     restart: always
-
     links:
-      - mysql:mysql
+      - db:mysql
     ports:
       - "8081:80"
     environment:
       MYSQL_ROOT_PASSWORD: researched_xyz
-      PMA_HOST: mysql
+
+volumes:
+  elasticsearch_data:
+  data:
+  logs:

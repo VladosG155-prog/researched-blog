@@ -13,7 +13,7 @@ get_header(); ?>
             <svg class="w-4 h-4 text-gray-500" fill="currentColor" viewBox="0 0 20 20">
                 <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
             </svg>
-            <a href="<?php echo home_url(); ?>" class="hover:text-white transition-colors" style="font-family: Inter, 'Helvetica Neue', Helvetica, sans-serif; font-size: 14px;">Блог</a>
+            <a href="<?php echo home_url('/blog'); ?>" class="hover:text-white transition-colors" style="font-family: Inter, 'Helvetica Neue', Helvetica, sans-serif; font-size: 14px;">Блог</a>
             <svg class="w-4 h-4 text-gray-500" fill="currentColor" viewBox="0 0 20 20">
                 <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
             </svg>
@@ -146,7 +146,7 @@ get_header(); ?>
                 <div class="text-center py-12 col-span-full">
                     <h3 class="text-xl font-semibold text-gray-400 mb-2">Статьи не найдены</h3>
                     <p class="text-gray-500">В данной категории/теге пока нет публикаций</p>
-                    <a href="<?php echo home_url(); ?>" class="inline-block mt-4 px-6 py-3 bg-[#D06E31] text-white font-semibold  hover:bg-[#B85A28] transition-colors">
+                    <a href="<?php echo home_url('/blog'); ?>" class="inline-block mt-4 px-6 py-3 bg-[#D06E31] text-white font-semibold  hover:bg-[#B85A28] transition-colors">
                         Вернуться к блогу
                     </a>
                 </div>
