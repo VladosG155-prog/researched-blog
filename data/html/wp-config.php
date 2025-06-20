@@ -113,8 +113,18 @@ if (isset($_SERVER['REQUEST_URI']) && strpos($_SERVER['REQUEST_URI'], '/blog') =
 
 /* Add any custom values between this line and the "stop editing" line. */
 
-/* That's all, stop editing! Happy publishing. */
-$_SERVER['REQUEST_URI'] = preg_replace('#^/blog#', '', $_SERVER['REQUEST_URI']);
+// Если ты используешь HTTPS за прокси (Traefik), то:
+if (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https') {
+    $_SERVER['HTTPS'] = 'on';
+}
+
+// Восстановим /blog в REQUEST_URI, чтобы WordPress знал, что сайт находится в /blog
+if (isset($_SERVER['REQUEST_URI']) && strpos($_SERVER['REQUEST_URI'], '/blog') !== 0) {
+    $_SERVER['REQUEST_URI'] = '/blog' . $_SERVER['REQUEST_URI'];
+}
+
+// Убедимся, что хост правильный (для редиректов и ссылок)
+$_SERVER['HTTP_HOST'] = 'researched.xyz';
 /** Absolute path to the WordPress directory. */
 if ( ! defined( 'ABSPATH' ) ) {
 	define( 'ABSPATH', __DIR__ . '/' );
