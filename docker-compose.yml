@@ -26,10 +26,6 @@ services:
         define('DISALLOW_FILE_EDIT', true);
         define('WP_DEBUG', false);
 
-        // SSL за прокси
-        if (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https') {
-            $_SERVER['HTTPS'] = 'on';
-        }
 
     volumes:
       - ./data/html:/var/www/html
