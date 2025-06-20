@@ -102,7 +102,12 @@ define('FORCE_SSL_ADMIN', true);
 if (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https') {
     $_SERVER['HTTPS'] = 'on';
 }
-
+// Важно: компенсируем stripPrefix `/blog` для WordPress
+if (isset($_SERVER['REQUEST_URI']) && strpos($_SERVER['REQUEST_URI'], '/blog') === 0) {
+    $_SERVER['REQUEST_URI'] = substr($_SERVER['REQUEST_URI'], 5); // убираем "/blog"
+    $_SERVER['SCRIPT_NAME'] = substr($_SERVER['SCRIPT_NAME'], 5);
+    $_SERVER['PHP_SELF'] = substr($_SERVER['PHP_SELF'], 5);
+}
 // === ELASTICSEARCH (optional) ===
 // define('ELASTICSEARCH_URL', 'http://your-elasticsearch-server:9200');
 
