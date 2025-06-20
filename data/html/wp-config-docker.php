@@ -123,7 +123,7 @@ if (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && strpos($_SERVER['HTTP_X_FORWARD
 	$_SERVER['HTTPS'] = 'on';
 }
 // (we include this by default because reverse proxying is extremely common in container environments)
-
+$_SERVER['REQUEST_URI'] = preg_replace('#^/blog#', '', $_SERVER['REQUEST_URI']);
 
 /* That's all, stop editing! Happy publishing. */
 

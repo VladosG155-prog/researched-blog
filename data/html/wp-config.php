@@ -114,7 +114,7 @@ if (isset($_SERVER['REQUEST_URI']) && strpos($_SERVER['REQUEST_URI'], '/blog') =
 /* Add any custom values between this line and the "stop editing" line. */
 
 /* That's all, stop editing! Happy publishing. */
-
+$_SERVER['REQUEST_URI'] = preg_replace('#^/blog#', '', $_SERVER['REQUEST_URI']);
 /** Absolute path to the WordPress directory. */
 if ( ! defined( 'ABSPATH' ) ) {
 	define( 'ABSPATH', __DIR__ . '/' );
